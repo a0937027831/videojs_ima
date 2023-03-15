@@ -1,41 +1,84 @@
 <template>
-  <div class="hello">
-    <h1>Vue 3 example with video.js preroll</h1>
-    <video id="content_video" class="video-js vjs-default-skin" controls preload="auto" width="640" height="360">
+  <div class="video_player">
+    <video id="video" class="video-js vjs-default-skin">
       <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
         type="video/mp4" />
     </video>
   </div>
 </template>
 
-<script>
-
+<script setup>
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
+
 // Styles
 import 'video.js/dist/video-js.min.css';
 import 'videojs-contrib-ads/dist/videojs-contrib-ads.css';
 import 'videojs-ima/src/css/videojs.ima.css';
 
-export default {
-  name: 'VideoAd',
-  data() {
-    return {
-      player: null,
-    };
-  },
-  mounted() {
+//loading this script in head
+useHead({
+  script: [{
+    src: "http://imasdk.googleapis.com/js/sdkloader/ima3.js",
+  }]
+});
 
-    this.player = videojs('content_video');
-    this.player.ima({
-      debug: true,
-      id: 'content_video',
-      adTagUrl: 'http://pubads.g.doubleclick.net/gampad/ads?slotname=/124319096/external/ad_rule_samples&sz=640x480&ciu_szs=300x250&cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&url=&unviewed_position_start=1&output=xml_vast3&impl=s&env=vp&gdfp_req=1&ad_rule=0&vad_type=linear&vpos=preroll&pod=1&ppos=1&lip=true&min_ad_duration=0&max_ad_duration=30000&vrid=6376&cmsid=496&video_doc_id=short_onecue&kfa=0&tfcd=0',
-    });
-    // this.player.ads(); use this not error
+//videojs option
+let videoOptions = {
+  autoplay: 'true',
+  preload: "auto",
+  fill: true,                       //填充模式
+  fluid: true,                      //will wait for the video to load to calculate the aspect ratio of the video
+  controls: true,
+  responsive: true,                 //響應式內部按鈕
+  playsinline: true,
+
+  // Make the text track settings dialog not initialize.
+  textTrackSettings: false,
+  qualityLevels: true,
+  controlBar: {
+    fullscreenToggle: true,        //全螢幕關閉
+    pictureInPictureToggle: false,  //子母畫面關閉
+    liveDisplay: true,             //live 字樣關閉
+    volumePanel: {
+      inline: true                //可以调整方向为水平(true)或者垂直(false)
+    },
   },
+  userActions: {
+    doubleClick: false
+  },
+  httpSourceSelector: {
+
+    default: 'high'
+  }
 };
+//video 
+let player;
+
+//Registers a callback to be called after the component has been mounted.
+onMounted(() => {
+  player = videojs('video', videoOptions, onReady);
+});
+
+//on video ready call this 
+function onReady() {
+  var adsOptions = {
+    debug: true,
+    id: 'video',
+    adTagUrl: 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&vid=short_onecue&correlator='
+  };
+  player.ima(adsOptions);
+}
+
+//Registers a hook to be called right before a component instance is to be unmounted.
+onBeforeUnmount(() => {
+  if (player != null) {
+    player.dispose();
+  }
+});
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
