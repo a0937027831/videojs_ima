@@ -1,10 +1,8 @@
 <template>
   <div class="video_player">
     <video id="video" class="video-js vjs-default-skin">
-      <source
-        src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
-        type="video/mp4"
-      />
+      <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+        type="video/mp4" />
     </video>
   </div>
 </template>
@@ -53,9 +51,6 @@ let videoOptions = {
   userActions: {
     doubleClick: false,
   },
-  httpSourceSelector: {
-    default: "high",
-  },
 };
 //video
 let player;
@@ -86,7 +81,7 @@ onBeforeUnmount(() => {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.bumper-ad > video {
+.bumper-ad>video {
   display: none;
 }
 </style>
