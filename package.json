@@ -14,5 +14,9 @@
     "video.js": "^8.0.4",
     "videojs-contrib-ads": "^7.1.0",
     "videojs-ima": "^2.1.0"
+  },
+  "overrides": {
+    "videojs-contrib-ads": "^7.1.0",
+    "video.js": "^8.0.4"
   }
 }
